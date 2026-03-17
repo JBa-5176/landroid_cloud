@@ -70,7 +70,7 @@
           "lifted": "Soulevée",
           "wire_missing": "Fil manquant",
           "outside_wire": "En dehors du fil",
-          "rain_delay": "Délai pluie actif",
+          "rain_delay": "Retard pour la pluie actif",
           "close_door_to_mow": "Fermez le couvercle pour tondre",
           "close_door_to_go_home": "Fermez le couvercle pour rentrer à la base",
           "blade_motor_blocked": "Le moteur de lame est bloqué",
@@ -107,10 +107,10 @@
         "name": "Puissance du signal"
       },
       "daily_progress": {
-        "name": "Progression quotidienne"
+        "name": "Progression du jour"
       },
       "next_schedule": {
-        "name": "Prochain programme"
+        "name": "Prochain départ programmé"
       },
       "rain_delay_remaining": {
         "name": "Délai pluie restant"
@@ -119,10 +119,10 @@
         "name": "Dernière mise à jour"
       },
       "battery_charge_cycles_total": {
-        "name": "Cycles de charge batterie totaux"
+        "name": "Nb total de charges batterie"
       },
       "battery_charge_cycles_current": {
-        "name": "Cycles de charge batterie depuis la réinitialisation"
+        "name": "Nb de charges batterie depuis RAZ"
       },
       "battery_temperature": {
         "name": "Température de la batterie"
@@ -131,16 +131,16 @@
         "name": "Tension de la batterie"
       },
       "blade_runtime_total": {
-        "name": "Temps total de fonctionnement des lames"
+        "name": "Temps total de travail des lames"
       },
       "blade_runtime_current": {
-        "name": "Temps de fonctionnement des lames depuis la réinitialisation"
+        "name": "Temps de travail des lames depuis la réinitialisation"
       },
       "blade_runtime_reset_at": {
-        "name": "Temps de fonctionnement des lames lors de la dernière réinitialisation"
+        "name": "Temps de travail des lames lors de la dernière réinitialisation"
       },
       "blade_runtime_reset_time": {
-        "name": "Heure de réinitialisation du temps des lames"
+        "name": "Date de RAZ de la durée des lames"
       },
       "distance_driven_total": {
         "name": "Distance totale parcourue"
@@ -161,14 +161,18 @@
       "pause_mode": {
         "name": "Mode pause"
       },
+    "switch": {
+      "party_mode": {
+        "name": "Mode festif"
+      },
       "lock": {
         "name": "Verrouillage"
       },
       "off_limits": {
-        "name": "Off Limits"
+        "name": "NoGo"
       },
       "off_limits_shortcut": {
-        "name": "Raccourcis Off Limits"
+        "name": "Fast2Base"
       },
       "acs": {
         "name": "ACS"
@@ -176,13 +180,13 @@
     },
     "button": {
       "edge_cut": {
-        "name": "Coupe des bords"
+        "name": "Routine de bord"
       },
       "reset_blade_time": {
-        "name": "Réinitialiser le temps des lames"
+        "name": "RAZ durée de fonctionnement des lames"
       },
       "reset_battery_cycles": {
-        "name": "Réinitialiser les cycles batterie"
+        "name": "RAZ du nombre de charges batterie"
       }
     },
     "number": {
@@ -193,7 +197,7 @@
         "name": "Hauteur de coupe"
       },
       "time_extension": {
-        "name": "Extension de temps"
+        "name": " + / - temps de travail /jour"
       },
       "torque": {
         "name": "Couple"
