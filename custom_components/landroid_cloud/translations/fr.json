@@ -87,7 +87,7 @@
           "wire_sync": "Synchronisation du fil",
           "charging_station_docking_error": "Erreur d'amarrage à la station de charge",
           "hbi_error": "Erreur HBI",
-          "ota_error": "Erreur OTA",
+          "ota_error": "Erreur OTA (mise à jour Over The Air)",
           "map_error": "Erreur de carte",
           "excessive_slope": "Pente excessive détectée",
           "unreachable_zone": "Zone inaccessible",
@@ -134,10 +134,10 @@
         "name": "Temps total de travail des lames"
       },
       "blade_runtime_current": {
-        "name": "Temps de travail des lames depuis la réinitialisation"
+        "name": "Temps de travail des lames depuis la RAZ"
       },
       "blade_runtime_reset_at": {
-        "name": "Temps de travail des lames lors de la dernière réinitialisation"
+        "name": "Temps de travail des lames lors de la dernière RAZ"
       },
       "blade_runtime_reset_time": {
         "name": "Date de RAZ de la durée des lames"
@@ -175,7 +175,7 @@
         "name": "Fast2Base"
       },
       "acs": {
-        "name": "ACS"
+        "name": "Anti Collision System"
       }
     },
     "button": {
