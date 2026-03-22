@@ -18,9 +18,11 @@ from custom_components.landroid_cloud.sensor import (
     _battery_value,
     _blade_reset_time_value,
     _blade_runtime_value,
+    _daily_progress_value,
     _last_update_value,
     _next_schedule_value,
     _normalized_schedule_attributes,
+    _orientation_value,
     _rain_delay_remaining_value,
     _schedule_attributes,
     _schedule_attributes_with_normalized_schedule,
@@ -65,10 +67,43 @@ def test_rain_delay_remaining_value_returns_minutes() -> None:
     assert _rain_delay_remaining_value(device) == 42
 
 
+def test_rain_delay_remaining_value_zero_is_unavailable() -> None:
+    """Rain delay remaining should be unavailable when no delay is active."""
+    device = SimpleNamespace(rainsensor={"remaining": 0})
+    assert _rain_delay_remaining_value(device) is None
+
+
 def test_rain_delay_remaining_value_unavailable() -> None:
     """Rain delay remaining should be unknown for non-integer values."""
     device = SimpleNamespace(rainsensor={"remaining": "42"})
     assert _rain_delay_remaining_value(device) is None
+
+
+def test_daily_progress_value_returns_integer() -> None:
+    """Daily progress should be exposed when present as an integer."""
+    device = SimpleNamespace(schedules={"daily_progress": 0})
+    assert _daily_progress_value(device) == 0
+
+
+def test_daily_progress_value_none_is_unavailable() -> None:
+    """Daily progress should be unavailable when pyworxcloud returns None."""
+    device = SimpleNamespace(schedules={"daily_progress": None})
+    assert _daily_progress_value(device) is None
+
+
+def test_orientation_value_returns_axis_degrees() -> None:
+    """Orientation axes should be exposed as numeric degree values."""
+    device = SimpleNamespace(orientation={"pitch": 1, "roll": -2.5, "yaw": 180})
+
+    assert _orientation_value(device, "pitch") == 1.0
+    assert _orientation_value(device, "roll") == -2.5
+    assert _orientation_value(device, "yaw") == 180.0
+
+
+def test_orientation_value_unavailable_for_non_numeric_axis() -> None:
+    """Orientation axes should be unavailable for non-numeric values."""
+    device = SimpleNamespace(orientation={"pitch": "1"})
+    assert _orientation_value(device, "pitch") is None
 
 
 def test_error_state_mapping_uses_stable_tokens() -> None:
@@ -82,9 +117,15 @@ def test_error_and_rssi_are_diagnostic_entities() -> None:
     """Error and signal strength should be categorized as diagnostics."""
     error = next(description for description in SENSORS if description.key == "error")
     rssi = next(description for description in SENSORS if description.key == "rssi")
+    pitch = next(description for description in SENSORS if description.key == "pitch")
+    roll = next(description for description in SENSORS if description.key == "roll")
+    yaw = next(description for description in SENSORS if description.key == "yaw")
 
     assert error.entity_category is EntityCategory.DIAGNOSTIC
     assert rssi.entity_category is EntityCategory.DIAGNOSTIC
+    assert pitch.entity_category is EntityCategory.DIAGNOSTIC
+    assert roll.entity_category is EntityCategory.DIAGNOSTIC
+    assert yaw.entity_category is EntityCategory.DIAGNOSTIC
 
 
 def test_error_is_enum_sensor_with_translated_state_tokens() -> None:
@@ -106,6 +147,9 @@ def test_selected_sensors_expose_specific_icons() -> None:
     assert descriptions["battery_charge_cycles_total"].icon == "mdi:battery-sync"
     assert descriptions["battery_charge_cycles_current"].icon == "mdi:battery-sync"
     assert descriptions["error"].icon == "mdi:alert-circle-outline"
+    assert descriptions["pitch"].icon == "mdi:axis-x-rotate-clockwise"
+    assert descriptions["roll"].icon == "mdi:axis-y-rotate-clockwise"
+    assert descriptions["yaw"].icon == "mdi:axis-z-rotate-clockwise"
 
 
 def test_next_schedule_is_timestamp_sensor() -> None:
@@ -385,6 +429,51 @@ def test_next_schedule_sensor_stays_available_with_valid_schedule(monkeypatch) -
     assert entity.available is True
 
 
+def test_rain_delay_remaining_sensor_is_unavailable_when_zero() -> None:
+    """Rain delay remaining sensor should be unavailable when delay is inactive."""
+    entity = object.__new__(LandroidSensor)
+    entity.entity_description = next(
+        description for description in SENSORS if description.key == "rain_delay_remaining"
+    )
+    entity.coordinator = SimpleNamespace(
+        last_update_success=True,
+        data={"serial": SimpleNamespace(rainsensor={"remaining": 0})},
+    )
+    entity._serial_number = "serial"
+
+    assert entity.available is False
+
+
+def test_daily_progress_sensor_is_unavailable_when_none() -> None:
+    """Daily progress sensor should be unavailable when pyworxcloud returns None."""
+    entity = object.__new__(LandroidSensor)
+    entity.entity_description = next(
+        description for description in SENSORS if description.key == "daily_progress"
+    )
+    entity.coordinator = SimpleNamespace(
+        last_update_success=True,
+        data={"serial": SimpleNamespace(schedules={"daily_progress": None})},
+    )
+    entity._serial_number = "serial"
+
+    assert entity.available is False
+
+
+def test_daily_progress_sensor_stays_available_with_zero() -> None:
+    """Daily progress sensor should stay available for a valid zero value."""
+    entity = object.__new__(LandroidSensor)
+    entity.entity_description = next(
+        description for description in SENSORS if description.key == "daily_progress"
+    )
+    entity.coordinator = SimpleNamespace(
+        last_update_success=True,
+        data={"serial": SimpleNamespace(schedules={"daily_progress": 0})},
+    )
+    entity._serial_number = "serial"
+
+    assert entity.available is True
+
+
 def test_battery_cycle_value_returns_integer() -> None:
     """Battery cycle values should be exposed when present."""
     device = SimpleNamespace(battery={"cycles": {"total": 3014, "current": 14}})
@@ -470,6 +559,15 @@ def test_rain_delay_remaining_is_disabled_by_default() -> None:
     )
 
     assert rain_delay_remaining.entity_registry_enabled_default is False
+
+
+def test_orientation_sensors_are_disabled_by_default() -> None:
+    """Orientation sensors should be disabled by default."""
+    descriptions = {description.key: description for description in SENSORS}
+
+    assert descriptions["pitch"].entity_registry_enabled_default is False
+    assert descriptions["roll"].entity_registry_enabled_default is False
+    assert descriptions["yaw"].entity_registry_enabled_default is False
 
 
 def test_last_update_is_disabled_by_default() -> None:

@@ -49,7 +49,7 @@ If the repository becomes a monorepo, additional `AGENTS.md` files may exist in 
 
 The Python communication module source code is maintained in:
 
-- `/development/github/homeassistant/pyworxcloud`
+- `/workspaces/pyworxcloud`
 
 From this workspace, the agent has access to work in that repository as well, including creating branches, making edits, committing, and pushing.
 
@@ -106,6 +106,7 @@ If certificates or tokens are required:
 - Keep commits small and focused.
 - Avoid introducing new dependencies unless justified.
 - Use `ruff` as formatter/linter in this repository, if not found local, install it.
+- Run `ruff check --fix` as defined in `.pre-commit-config.yaml` when validating Python changes.
 
 ## Home Assistant Compliance
 
@@ -138,6 +139,17 @@ translation/<name> - for translation purposes
 
 All new branches MUST be based on `master`, unless the user explicitly instructs otherwise.
 
+All code changes MUST start from a dedicated `feature/...`, `fix/...`, or `chore/...` branch.
+
+The agent must NEVER push directly to `master` and NEVER merge directly to `master` unless the user explicitly asks for it in the current session.
+
+Before creating a commit, the agent MUST report the result of:
+
+- `git status`
+- `ruff format`
+- `ruff check`
+- the relevant tests run for the change
+
 Each PR must include:
 
 - A clear description of changes
@@ -155,7 +167,19 @@ The agent must NOT use administrative merge overrides (for example `gh pr merge 
 
 Before merging any PR, the agent MUST wait until all required CI/status checks are green/passing.
 
+If GitHub, CI, or local tooling is unstable or failing, the agent MUST stop and ask before taking any workaround that bypasses the normal branch -> PR -> merge flow.
+
 When a branch is merged it must also be deleted both local and remote, and changes merged to master must be pulled
+
+---
+
+## Release Notes
+
+- Release notes should ALWAYS be in english
+- Keep the existing release note structure unless explicitly asked to change it
+- The `## Changes` section should be short, easy to read, and written as plain prose without bullets
+- Prefer 2-3 short paragraphs under `## Changes` instead of one dense block of text
+- Base the `## Changes` text only on the PRs already included in the release draft unless told otherwise
 
 ---
 

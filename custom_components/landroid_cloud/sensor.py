@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_CHARGING,
+    DEGREE,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     UnitOfLength,
@@ -47,8 +48,16 @@ def _battery_charging_attribute(device) -> dict[str, bool] | None:
 def _rain_delay_remaining_value(device) -> int | None:
     """Return remaining rain delay in minutes when available."""
     remaining = getattr(device, "rainsensor", {}).get("remaining")
-    if isinstance(remaining, int):
+    if isinstance(remaining, int) and remaining > 0:
         return remaining
+    return None
+
+
+def _daily_progress_value(device) -> int | None:
+    """Return daily progress percentage when available."""
+    progress = getattr(device, "schedules", {}).get("daily_progress")
+    if isinstance(progress, int):
+        return progress
     return None
 
 
@@ -64,6 +73,14 @@ def _battery_cycle_value(device, cycle_key: str) -> int | None:
 def _battery_value(device, battery_key: str) -> float | None:
     """Return battery telemetry value when available."""
     value = getattr(device, "battery", {}).get(battery_key)
+    if isinstance(value, int | float):
+        return float(value)
+    return None
+
+
+def _orientation_value(device, orientation_key: str) -> float | None:
+    """Return one orientation axis in degrees when available."""
+    value = getattr(device, "orientation", {}).get(orientation_key)
     if isinstance(value, int | float):
         return float(value)
     return None
@@ -332,6 +349,33 @@ SENSORS: tuple[LandroidSensorDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     LandroidSensorDescription(
+        key="pitch",
+        translation_key="pitch",
+        native_unit_of_measurement=DEGREE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:axis-x-rotate-clockwise",
+    ),
+    LandroidSensorDescription(
+        key="roll",
+        translation_key="roll",
+        native_unit_of_measurement=DEGREE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:axis-y-rotate-clockwise",
+    ),
+    LandroidSensorDescription(
+        key="yaw",
+        translation_key="yaw",
+        native_unit_of_measurement=DEGREE,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
+        icon="mdi:axis-z-rotate-clockwise",
+    ),
+    LandroidSensorDescription(
         key="blade_runtime_total",
         translation_key="blade_runtime_total",
         native_unit_of_measurement=UnitOfTime.MINUTES,
@@ -437,6 +481,10 @@ class LandroidSensor(LandroidBaseEntity, SensorEntity):
             return False
         if self.entity_description.key == "next_schedule":
             return _next_schedule_value(self.device) is not None
+        if self.entity_description.key == "rain_delay_remaining":
+            return _rain_delay_remaining_value(self.device) is not None
+        if self.entity_description.key == "daily_progress":
+            return _daily_progress_value(self.device) is not None
         return True
 
     @property
@@ -452,7 +500,7 @@ class LandroidSensor(LandroidBaseEntity, SensorEntity):
         if key == "rssi":
             return getattr(device, "rssi", None)
         if key == "daily_progress":
-            return device.schedules.get("daily_progress")
+            return _daily_progress_value(device)
         if key == "next_schedule":
             return _next_schedule_value(device)
         if key == "rain_delay_remaining":
@@ -467,6 +515,12 @@ class LandroidSensor(LandroidBaseEntity, SensorEntity):
             return _battery_value(device, "temperature")
         if key == "battery_voltage":
             return _battery_value(device, "voltage")
+        if key == "pitch":
+            return _orientation_value(device, "pitch")
+        if key == "roll":
+            return _orientation_value(device, "roll")
+        if key == "yaw":
+            return _orientation_value(device, "yaw")
         if key == "blade_runtime_total":
             return _blade_runtime_value(device, "total_on")
         if key == "blade_runtime_current":

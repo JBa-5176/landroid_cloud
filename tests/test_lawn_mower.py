@@ -8,6 +8,14 @@ from homeassistant.exceptions import HomeAssistantError
 import pytest
 from pyworxcloud import ScheduleEntry, ScheduleModel
 
+from custom_components.landroid_cloud.const import (
+    MOWER_STATE_EDGECUT,
+    MOWER_STATE_ESCAPED_DIGITAL_FENCE,
+    MOWER_STATE_IDLE,
+    MOWER_STATE_SEARCHING_ZONE,
+    MOWER_STATE_STARTING,
+    MOWER_STATE_ZONING,
+)
 from custom_components.landroid_cloud.lawn_mower import (
     LandroidCloudMowerEntity,
     STATUS_ACTIVITY_MAP,
@@ -19,10 +27,20 @@ from custom_components.landroid_cloud.lawn_mower import (
 )
 
 
-def test_start_sequence_states_map_to_mowing() -> None:
-    """Start-sequence related status codes should map to standard mowing state."""
-    assert STATUS_ACTIVITY_MAP[2] is LawnMowerActivity.MOWING
-    assert STATUS_ACTIVITY_MAP[3] is LawnMowerActivity.MOWING
+def test_start_sequence_states_map_to_starting() -> None:
+    """Start-sequence related status codes should map to the restored starting state."""
+    assert STATUS_ACTIVITY_MAP[2] == MOWER_STATE_STARTING
+    assert STATUS_ACTIVITY_MAP[3] == MOWER_STATE_STARTING
+    assert STATUS_ACTIVITY_MAP[33] == MOWER_STATE_STARTING
+
+
+def test_restored_legacy_states_are_exposed() -> None:
+    """Legacy mower states should map to dedicated mower activities again."""
+    assert STATUS_ACTIVITY_MAP[0] == MOWER_STATE_IDLE
+    assert STATUS_ACTIVITY_MAP[13] == MOWER_STATE_ESCAPED_DIGITAL_FENCE
+    assert STATUS_ACTIVITY_MAP[31] == MOWER_STATE_ZONING
+    assert STATUS_ACTIVITY_MAP[32] == MOWER_STATE_EDGECUT
+    assert STATUS_ACTIVITY_MAP[103] == MOWER_STATE_SEARCHING_ZONE
 
 
 def test_unknown_state_defaults_to_error() -> None:
@@ -109,6 +127,45 @@ async def test_add_schedule_service_calls_cloud_add_schedule_entry() -> None:
             )
         ],
     )
+
+
+@pytest.mark.asyncio
+async def test_add_schedule_service_accepts_day_alias() -> None:
+    """Add schedule should accept the legacy single-day alias."""
+    entity = _entity_with_cloud(protocol=1)
+
+    await entity._async_service_add_schedule(
+        day="tuesday",
+        start="12:00",
+        duration=50,
+        boundary=None,
+    )
+
+    _, schedule = entity.coordinator.cloud.set_schedule.await_args.args
+    assert schedule.entries == [
+        ScheduleEntry(
+            entry_id="p1:0",
+            day="tuesday",
+            start="12:00",
+            duration=50,
+            boundary=None,
+            source="slot",
+            secondary=False,
+        )
+    ]
+
+
+@pytest.mark.asyncio
+async def test_add_schedule_service_rejects_invalid_start_with_clear_error() -> None:
+    """Add schedule should fail with a Home Assistant error for malformed time."""
+    entity = _entity_with_cloud(protocol=0)
+
+    with pytest.raises(HomeAssistantError, match="start must be in HH:MM format"):
+        await entity._async_service_add_schedule(
+            days=["monday"],
+            start="25:00",
+            duration=30,
+        )
 
 
 @pytest.mark.asyncio

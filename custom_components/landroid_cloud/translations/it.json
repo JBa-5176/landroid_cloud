@@ -147,6 +147,15 @@
       },
       "mower_runtime_total": {
         "name": "Tempo totale di funzionamento del rasaerba"
+      },
+      "pitch": {
+        "name": "Beccheggio"
+      },
+      "roll": {
+        "name": "Rollio"
+      },
+      "yaw": {
+        "name": "Imbardata"
       }
     },
     "binary_sensor": {
@@ -203,6 +212,52 @@
       "zone": {
         "name": "Zona"
       }
+    },
+    "lawn_mower": {
+      "mower": {
+        "state": {
+          "edgecut": "Taglio bordo",
+          "escaped_digital_fence": "Fuori dal recinto digitale",
+          "idle": "In attesa",
+          "searching_zone": "Ricerca zona",
+          "starting": "Partenza",
+          "zoning": "Apprendimento zone"
+        }
+      }
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "start_mowing": "Avvia il taglio con {entity_name}",
+      "pause": "Metti in pausa {entity_name}",
+      "dock": "Fai tornare {entity_name} alla stazione di ricarica"
+    },
+    "condition_type": {
+      "is_mowing": "{entity_name} sta tagliando il prato",
+      "is_docked": "{entity_name} si trova alla stazione di ricarica",
+      "has_error": "{entity_name} segnala un errore",
+      "is_returning": "{entity_name} sta tornando alla stazione di ricarica",
+      "is_edgecut": "{entity_name} sta eseguendo il taglio bordo",
+      "is_starting": "{entity_name} sta partendo",
+      "is_zoning": "{entity_name} sta apprendendo una zona",
+      "is_searching_zone": "{entity_name} sta cercando una zona",
+      "is_idle": "{entity_name} è in attesa",
+      "is_escaped_digital_fence": "{entity_name} è fuori dal recinto digitale"
+    },
+    "trigger_type": {
+      "mowing": "{entity_name} ha iniziato a tagliare il prato",
+      "docked": "{entity_name} è tornato alla stazione di ricarica",
+      "error": "{entity_name} è entrato in stato di errore",
+      "returning": "{entity_name} ha iniziato a tornare alla stazione di ricarica",
+      "edgecut": "{entity_name} ha iniziato il taglio bordo",
+      "starting": "{entity_name} ha iniziato la partenza",
+      "zoning": "{entity_name} ha iniziato l'apprendimento di una zona",
+      "searching_zone": "{entity_name} ha iniziato a cercare una zona",
+      "idle": "{entity_name} è tornato in attesa",
+      "escaped_digital_fence": "{entity_name} è uscito dal recinto digitale"
+    },
+    "extra_fields": {
+      "for": "[%key:common::device_automation::extra_fields::for%]"
     }
   }
 }

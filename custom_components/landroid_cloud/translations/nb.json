@@ -147,6 +147,15 @@
       },
       "mower_runtime_total": {
         "name": "Total driftstid for klipper"
+      },
+      "pitch": {
+        "name": "Pitch"
+      },
+      "roll": {
+        "name": "Roll"
+      },
+      "yaw": {
+        "name": "Yaw"
       }
     },
     "binary_sensor": {
@@ -203,6 +212,52 @@
       "zone": {
         "name": "Sone"
       }
+    },
+    "lawn_mower": {
+      "mower": {
+        "state": {
+          "edgecut": "Klipper kant",
+          "escaped_digital_fence": "Utenfor det digitale gjerdet",
+          "idle": "Venter",
+          "searching_zone": "Søker etter sone",
+          "starting": "Starter",
+          "zoning": "Sonetrening"
+        }
+      }
+    }
+  },
+  "device_automation": {
+    "action_type": {
+      "start_mowing": "La {entity_name} starte klippingen",
+      "pause": "Sett {entity_name} på pause",
+      "dock": "La {entity_name} kjøre tilbake til ladestasjonen"
+    },
+    "condition_type": {
+      "is_mowing": "{entity_name} klipper",
+      "is_docked": "{entity_name} står i ladestasjonen",
+      "has_error": "{entity_name} har en feil",
+      "is_returning": "{entity_name} er på vei tilbake til ladestasjonen",
+      "is_edgecut": "{entity_name} klipper kanten",
+      "is_starting": "{entity_name} starter",
+      "is_zoning": "{entity_name} trener på soner",
+      "is_searching_zone": "{entity_name} søker etter en sone",
+      "is_idle": "{entity_name} venter",
+      "is_escaped_digital_fence": "{entity_name} er utenfor det digitale gjerdet"
+    },
+    "trigger_type": {
+      "mowing": "{entity_name} begynte å klippe",
+      "docked": "{entity_name} kjørte inn i ladestasjonen",
+      "error": "{entity_name} gikk over i feiltilstand",
+      "returning": "{entity_name} begynte å kjøre tilbake til ladestasjonen",
+      "edgecut": "{entity_name} begynte å klippe kanten",
+      "starting": "{entity_name} begynte å starte opp",
+      "zoning": "{entity_name} begynte sonetreningen",
+      "searching_zone": "{entity_name} begynte å søke etter en sone",
+      "idle": "{entity_name} gikk til ventemodus",
+      "escaped_digital_fence": "{entity_name} kom utenfor det digitale gjerdet"
+    },
+    "extra_fields": {
+      "for": "[%key:common::device_automation::extra_fields::for%]"
     }
   }
 }
