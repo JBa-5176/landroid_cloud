@@ -3,9 +3,9 @@
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
+import pytest
 from homeassistant.components.lawn_mower import LawnMowerActivity
 from homeassistant.exceptions import HomeAssistantError
-import pytest
 from pyworxcloud import ScheduleEntry, ScheduleModel
 
 from custom_components.landroid_cloud.const import (
@@ -17,12 +17,12 @@ from custom_components.landroid_cloud.const import (
     MOWER_STATE_ZONING,
 )
 from custom_components.landroid_cloud.lawn_mower import (
-    LandroidCloudMowerEntity,
-    STATUS_ACTIVITY_MAP,
     SERVICE_ADD_SCHEDULE,
     SERVICE_DELETE_SCHEDULE,
     SERVICE_EDIT_SCHEDULE,
     SERVICE_OTS,
+    STATUS_ACTIVITY_MAP,
+    LandroidCloudMowerEntity,
     async_setup_entry,
 )
 
@@ -84,9 +84,7 @@ def _entity_with_cloud(protocol: int = 0) -> LandroidCloudMowerEntity:
     return entity
 
 
-def _schedule_model(
-    *, protocol: int, entries: list[ScheduleEntry]
-) -> ScheduleModel:
+def _schedule_model(*, protocol: int, entries: list[ScheduleEntry]) -> ScheduleModel:
     """Build a normalized schedule model for tests."""
     return ScheduleModel(
         enabled=False,
@@ -258,7 +256,9 @@ async def test_add_schedule_service_raises_when_day_is_full() -> None:
 
 
 @pytest.mark.asyncio
-async def test_add_schedule_service_allows_multiple_protocol_one_slots_per_day() -> None:
+async def test_add_schedule_service_allows_multiple_protocol_one_slots_per_day() -> (
+    None
+):
     """Add schedule should allow another same-day entry on multi-slot mowers."""
     entity = _entity_with_cloud(protocol=1)
     entity.coordinator.cloud.get_schedule = lambda serial_number: _schedule_model(
@@ -663,7 +663,9 @@ async def test_delete_schedule_service_raises_for_ambiguous_same_day_start() -> 
 
 
 @pytest.mark.asyncio
-async def test_delete_schedule_service_raises_for_duplicate_same_day_and_start() -> None:
+async def test_delete_schedule_service_raises_for_duplicate_same_day_and_start() -> (
+    None
+):
     """Delete should fail clearly when two schedules share day and start time."""
     entity = _entity_with_cloud(protocol=0)
     entity.coordinator.cloud.get_schedule = lambda serial_number: _schedule_model(

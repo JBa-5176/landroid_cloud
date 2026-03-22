@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
 from homeassistant.components.lawn_mower import LawnMowerActivity
 from homeassistant.const import (
     CONF_CONDITION,
@@ -12,7 +13,6 @@ from homeassistant.const import (
     CONF_ENTITY_ID,
     CONF_TYPE,
 )
-import pytest
 
 from custom_components.landroid_cloud import DOMAIN
 from custom_components.landroid_cloud.const import (
@@ -145,9 +145,11 @@ def test_condition_from_config_matches_resolved_entity_state(monkeypatch) -> Non
     )
     hass = SimpleNamespace(
         states=SimpleNamespace(
-            get=lambda entity_id: SimpleNamespace(state=LawnMowerActivity.RETURNING)
-            if entity_id == "lawn_mower.front_yard"
-            else None
+            get=lambda entity_id: (
+                SimpleNamespace(state=LawnMowerActivity.RETURNING)
+                if entity_id == "lawn_mower.front_yard"
+                else None
+            )
         )
     )
 

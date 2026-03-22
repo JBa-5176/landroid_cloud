@@ -18,8 +18,8 @@ from homeassistant.const import (
     DEGREE,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    UnitOfLength,
     UnitOfElectricPotential,
+    UnitOfLength,
     UnitOfTemperature,
     UnitOfTime,
 )

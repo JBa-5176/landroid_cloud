@@ -7,8 +7,8 @@ from homeassistant.helpers.entity import EntityCategory
 from custom_components.landroid_cloud.number import (
     NUMBERS,
     _rain_delay_value,
-    _torque_value,
     _time_extension_value,
+    _torque_value,
 )
 
 

@@ -11,10 +11,10 @@ from homeassistant.helpers.entity import EntityCategory
 import custom_components.landroid_cloud.sensor as sensor_module
 from custom_components.landroid_cloud.const import ERROR_STATE_MAP, ERROR_STATE_OPTIONS
 from custom_components.landroid_cloud.sensor import (
-    LandroidSensor,
     SENSORS,
-    _battery_cycle_value,
+    LandroidSensor,
     _battery_charging_attribute,
+    _battery_cycle_value,
     _battery_value,
     _blade_reset_time_value,
     _blade_runtime_value,
@@ -344,9 +344,7 @@ def test_next_schedule_returns_none_when_no_valid_slots_exist(monkeypatch) -> No
                     "duration_extended": 0,
                 }
             ],
-            "next_schedule_start": datetime(
-                2026, 3, 12, 11, 0, tzinfo=ZoneInfo("UTC")
-            ),
+            "next_schedule_start": datetime(2026, 3, 12, 11, 0, tzinfo=ZoneInfo("UTC")),
         },
     )
 
@@ -433,7 +431,9 @@ def test_rain_delay_remaining_sensor_is_unavailable_when_zero() -> None:
     """Rain delay remaining sensor should be unavailable when delay is inactive."""
     entity = object.__new__(LandroidSensor)
     entity.entity_description = next(
-        description for description in SENSORS if description.key == "rain_delay_remaining"
+        description
+        for description in SENSORS
+        if description.key == "rain_delay_remaining"
     )
     entity.coordinator = SimpleNamespace(
         last_update_success=True,
