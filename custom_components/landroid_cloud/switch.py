@@ -60,6 +60,14 @@ SWITCHES: tuple[LandroidSwitchDescription, ...] = (
         entity_registry_enabled_default=False,
         capability=DeviceCapability.ACS,
     ),
+    LandroidSwitchDescription(
+        key="rainsensor",
+        translation_key="Rainsensor",
+        icon=" mdi:weather-rainy",
+        entity_category=EntityCategory.CONFIG,
+        capability=DeviceCapability.rainsensor,
+    ),
+    
 )
 
 
