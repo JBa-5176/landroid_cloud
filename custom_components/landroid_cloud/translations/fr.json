@@ -231,30 +231,30 @@
   },
   "device_automation": {
     "action_type": {
-      "start_mowing": "Lancer la tonte de {entity_name}",
+      "start_mowing": "Démarrer la tonte de {entity_name}",
       "pause": "Mettre {entity_name} en pause",
-      "dock": "Faire revenir {entity_name} à la station de charge"
+      "dock": "Faire revenir {entity_name} à la base"
     },
     "condition_type": {
-      "is_mowing": "{entity_name} est en train de tondre",
-      "is_docked": "{entity_name} est à la station de charge",
+      "is_mowing": "{entity_name} tond",
+      "is_docked": "{entity_name} est sur la base",
       "has_error": "{entity_name} a une erreur",
-      "is_returning": "{entity_name} rentre à la station de charge",
+      "is_returning": "{entity_name} rentre à la base",
       "is_edgecut": "{entity_name} coupe la bordure",
       "is_starting": "{entity_name} démarre",
-      "is_zoning": "{entity_name} est en entraînement de zone",
+      "is_zoning": "{entity_name} est en création de zone",
       "is_searching_zone": "{entity_name} recherche une zone",
       "is_idle": "{entity_name} est au repos",
       "is_escaped_digital_fence": "{entity_name} est hors de la barrière numérique"
     },
     "trigger_type": {
       "mowing": "{entity_name} tond",
-      "docked": "{entity_name} est à la station de charge",
+      "docked": "{entity_name} est à la base",
       "error": "{entity_name} est en erreur",
-      "returning": "{entity_name} rentre à la station de charge",
+      "returning": "{entity_name} rentre à la base",
       "edgecut": "{entity_name} coupe la bordure",
       "starting": "{entity_name} démarre",
-      "zoning": "{entity_name} a commencé l'entraînement de zone",
+      "zoning": "{entity_name} Crée les zones",
       "searching_zone": "{entity_name} recherche une zone",
       "idle": "{entity_name} est au repos",
       "escaped_digital_fence": "{entity_name} est sorti de la barrière numérique"
